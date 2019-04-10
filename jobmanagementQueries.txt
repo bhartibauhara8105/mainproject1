@@ -1,0 +1,74 @@
+CREATE SCHEMA `jobmanagement` ;
+
+use jobmanagement;
+
+CREATE TABLE `jobmanagement`.`user` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `firstname` VARCHAR(25) NULL,
+  `lastname` VARCHAR(25) NULL,
+  `email` VARCHAR(45) NULL,
+  `password` VARCHAR(45) NULL,
+  `phone` VARCHAR(12) NULL,
+  `role` VARCHAR(10) NULL DEFAULT 'user',
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `email_UNIQUE` (`email` ASC));
+
+
+
+
+CREATE TABLE `jobmanagement`.`jobs` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `uid` INT NOT NULL,
+  `title` VARCHAR(45) NULL,
+  `category` VARCHAR(45) NULL,
+  `location` VARCHAR(45) NULL,
+  `description` LONGTEXT NULL,
+  `experience` INT NULL,
+  `salary` VARCHAR(45) NULL DEFAULT 'Not Disclosed',
+  PRIMARY KEY (`id`),
+  INDEX `uid_idx` (`uid` ASC),
+  CONSTRAINT `uid`
+    FOREIGN KEY (`uid`)
+    REFERENCES `jobmanagement`.`user` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);
+
+
+CREATE TABLE `jobmanagement`.`resume` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `userid` INT NOT NULL,
+  `resumefile` MEDIUMBLOB NULL,
+  PRIMARY KEY (`id`),
+  INDEX (`userid` ASC),
+  CONSTRAINT `userid`
+    FOREIGN KEY (`userid`)
+    REFERENCES `jobmanagement`.`user` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);
+
+
+
+CREATE TABLE `jobmanagement`.`appliedjobs` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `userid` INT NULL,
+  `resumeid` INT NULL,
+  `jobid` INT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `applicant_idx` (`userid` ASC),
+  INDEX `resumeid_idx` (`resumeid` ASC),
+  INDEX `jobpost_idx` (`jobid` ASC),
+  CONSTRAINT `applicantid`
+    FOREIGN KEY (`userid`)
+    REFERENCES `jobmanagement`.`user` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `resumeid`
+    FOREIGN KEY (`resumeid`)
+    REFERENCES `jobmanagement`.`resume` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `jobpostid`
+    FOREIGN KEY (`jobid`)
+    REFERENCES `jobmanagement`.`jobs` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);
